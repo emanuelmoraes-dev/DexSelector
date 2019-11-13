@@ -1,0 +1,14 @@
+#header {
+    text-align: center
+}
+
+button.btnplus {
+    margin: 0;
+    padding: 5px 13px;
+    font-size: 13px;
+    border-radius: 5px;
+}
+
+table#tbl-pokemons-gerados th {
+    cursor: pointer;
+}

@@ -1,0 +1,22 @@
+{
+  "name": "dexselector",
+  "version": "1.0.0",
+  "description": "Um simples aplicativo com o objetivo de receber um conjunto de pokemons com seus estatus e mostrar estatísticas para auxiliar a seleção dos melhores",
+  "main": "js/main.js",
+  "scripts": {
+    "start": "electron .",
+    "win32": "electron-packager . dexselector --platform=win32 --arch=ia32",
+    "win64": "electron-packager . dexselector --platform=win32 --arch=x64",
+    "linux32": "electron-packager . dexselector --platform=linux --arch=ia32",
+    "linux64": "electron-packager . dexselector --platform=linux --arch=x64",
+    "osx": "electron-packager . dexselector --platform=darwin --arch=x64",
+    "build": "electron-packager . --all"
+  },
+  "author": "Emanuel Moraes",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^6.0.2",
+    "electron-packager": "^14.0.4",
+    "electron-prebuilt": "^1.4.13"
+  }
+}

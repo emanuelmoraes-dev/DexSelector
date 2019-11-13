@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt_BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../lib/bootstrap-4.1.1/css/bootstrao.min.css">
+    <link rel="stylesheet" href="../lib/bulma-0.7.1/css/bulma.min.css">
+    <link rel="stylesheet" href="../lib/font-awesome-5.0.13/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <script src="../lib/vuejs-2.5.16/vue.js"></script>
+    <title>Dex Selector</title>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="columns">
+                <div class="column">
+                    <br>
+                    <h1 class="title is-3">Lista de Pokemons</h1>
+                    <br>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Nível</th>
+                                <th>HP</th>
+                                <th>Ataque Físico</th>
+                                <th>Defesa Física</th>
+                                <th>Ataque Especial</th>
+                                <th>Defesa Especial</th>
+                                <th>Velocidade</th>
+                                <th>Natureza</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <button @click.prevent.stop="showModalAdd()" data-toggle="tooltip" title="Adicionar Novo Pokemon" type="button" class="btnplus btn btn-primary">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr v-for="(pk, index) of pokemons" :key="pk.numero">
+                                <td v-if="!pk.__editing">{{pk.numero}}</td>
+                                <td v-if="!pk.__editing">{{pk.nivel}}</td>
+                                <td v-if="!pk.__editing">{{pk.hp}}</td>
+                                <td v-if="!pk.__editing">{{pk.ataqueFisico}}</td>
+                                <td v-if="!pk.__editing">{{pk.defesaFisica}}</td>
+                                <td v-if="!pk.__editing">{{pk.ataqueEspecial}}</td>
+                                <td v-if="!pk.__editing">{{pk.defesaEspecial}}</td>
+                                <td v-if="!pk.__editing">{{pk.velocidade}}</td>
+                                <td v-if="!pk.__editing">{{pk.natureza | parseNatureza}}</td>
+
+                                <td v-if="pk.__editing">
+                                    {{pk.numero}}
+                                </td>
+                                <td v-if="pk.__editing">
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pk.nivel">
+                                    </div>
+                                </td>
+                                <td v-if="pk.__editing">
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pk.hp">
+                                    </div>
+                                </td>
+                                <td v-if="pk.__editing">
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pk.ataqueFisico">
+                                    </div>
+                                </td>
+                                <td v-if="pk.__editing">
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pk.defesaFisica">
+                                    </div>
+                                </td>
+                                <td v-if="pk.__editing">
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pk.ataqueEspecial">
+                                    </div>
+                                </td>
+                                <td v-if="pk.__editing">
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pk.defesaEspecial">
+                                    </div>
+                                </td>
+                                <td v-if="pk.__editing">
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pk.velocidade">
+                                    </div>
+                                </td>
+                                <td v-if="pk.__editing">
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pk.natureza">
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="#" @click.prevent.stop="edit(pk, index)">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="#" @click.prevent.stop="remove(pk, index)">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="columns">
+                <div class="column">
+                    <br>
+                    <h1 class="title is-3">Lista de Pokemons Gerados</h1>
+                    <br>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column table-responsive">
+                    <table id="tbl-pokemons-gerados" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th @click="ordenar('numero')">Número</th>
+                                <th @click="ordenar('nivel')">Nível</th>
+                                <th @click="ordenar('hp')">HP</th>
+                                <th @click="ordenar('ataqueFisico')">Ataque Físico</th>
+                                <th @click="ordenar('defesaFisica')">Defesa Física</th>
+                                <th @click="ordenar('ataqueEspecial')">Ataque Especial</th>
+                                <th @click="ordenar('defesaEspecial')">Defesa Especial</th>
+                                <th @click="ordenar('velocidade')">Velocidade</th>
+                                <th @click="ordenar('natureza')">Natureza</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="pk of pokemonsGerados" :key="pk.numero">
+                                <td>{{pk.numero}}</td>
+                                <td>{{pk.nivel}}</td>
+                                <td>{{pk.hp}}</td>
+                                <td>{{pk.ataqueFisico}}</td>
+                                <td>{{pk.defesaFisica}}</td>
+                                <td>{{pk.ataqueEspecial}}</td>
+                                <td>{{pk.defesaEspecial}}</td>
+                                <td>{{pk.velocidade}}</td>
+                                <td>{{pk.natureza | parseNatureza}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" :class="{'is-active': modalAdd}">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Status do Pokemon</p>
+                    <button @click.prevent.stop="cancelar()" class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="container">
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Nível</label>
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pktemp.nivel">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">HP</label>
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pktemp.hp">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Ataque Físico</label>
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pktemp.ataqueFisico">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Defesa Física</label>
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pktemp.defesaFisica">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Ataque Especial</label>
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pktemp.ataqueEspecial">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Defesa Especial</label>
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pktemp.defesaEspecial">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Velocidade</label>
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pktemp.velocidade">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <label class="label">Natureza</label>
+                                    <div class="control">
+                                        <input class="input" type="text" v-model="pktemp.natureza">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button @click.prevent.stop="salvar()" class="button is-success">Salvar</button>
+                    <button @click.prevent.stop="cancelar()" class="button">Cancelar</button>
+                </footer>
+            </div>
+        </div>
+
+        <div class="modal" :class="{'is-active': modalMessage}">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">{{msg_title}}</p>
+                    <button class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    {{msg_modal}}
+                </section>
+                <footer class="modal-card-foot">
+                    <button @click.prevent.stop="close()" class="button">OK</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../js/windows/index.js"></script>
+</html>
